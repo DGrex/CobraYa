@@ -1,5 +1,5 @@
 
-const PegisterClientPage = () => {
+const RegisterClientPage = () => {
   return (
     <div>
       PegisterClientPage
@@ -7,4 +7,4 @@ const PegisterClientPage = () => {
   )
 }
 
-export default PegisterClientPage
+export default RegisterClientPage
