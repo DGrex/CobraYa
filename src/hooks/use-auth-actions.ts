@@ -1,6 +1,13 @@
-import { signInWithPopup, signOut, type AuthError } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  updateProfile,
+  type AuthError,
+} from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
-import { useState } from "react";
+import { useState} from "react";
 import { useAuth } from "reactfire";
 
 interface AuthActionsResponse {
@@ -9,53 +16,110 @@ interface AuthActionsResponse {
 }
 
 export const useAuthActions = () => {
-    const [loading, setLoading] = useState<boolean>(false)
-    const auth = useAuth()
+  const [loading, setLoading] = useState<boolean>(false);
+  const auth = useAuth();
 
   const loginWithGoogle = async (): Promise<AuthActionsResponse> => {
-    setLoading(true)
+    setLoading(true);
     try {
-        const provider = new GoogleAuthProvider()
-        const data = await signInWithPopup(auth,provider)
-        console.log(data)
-        return{
-            success: true,
-            error: null
-        };
-
+      const provider = new GoogleAuthProvider();
+      const data = await signInWithPopup(auth, provider);
+      console.log(data);
+      return {
+        success: true,
+        error: null,
+      };
     } catch (error) {
-        const AuthError = error as AuthError
-        return{
-            success: false,
-            error: AuthError
-        }
+      const AuthError = error as AuthError;
+      return {
+        success: false,
+        error: AuthError,
+      };
     } finally {
-        setLoading(false)
+      setLoading(false);
+    }
+  };
+
+  const login = async (data: {
+    email: string;
+    password: string;
+  }): Promise<AuthActionsResponse> => {
+    setLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, data.email, data.password);      
+      return {
+        success: true,
+        error: null,
+      };
+    } catch (error) {
+      const authError = error as AuthError;
+      return {
+        success: false,
+        error: authError,
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+    
+  const register = async (data: {
+    displayName: string;
+    email: string;
+    password: string;
+  }): Promise<AuthActionsResponse> => {
+    setLoading(true);
+    try {
+      const currentUser = await createUserWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password,
+      );
+      if (currentUser.user) {
+        await updateProfile(currentUser.user, {
+          displayName: data.displayName,
+        });
+        currentUser.user.reload();
+      }
+      return {
+        success: true,
+        error: null,
+      };
+    } catch (error) {
+      const authError = error as AuthError;
+      return {
+        success: false,
+        error: authError,
+      };
+    } finally {
+      setLoading(false)
     }
   };
 
   const logout = async (): Promise<AuthActionsResponse> => {
-    setLoading(true)
+    setLoading(true);
     try {
-      await signOut(auth)
-      window.location.href = "/auth/login"
-      return{
+      await signOut(auth);
+      window.location.href = "/auth/login";
+      return {
         success: false,
         error: null,
-      }
+      };
     } catch (error) {
-      const authError = error as AuthError
-      return{
+      const authError = error as AuthError;
+      return {
         success: true,
-        error: authError
-      }
-    } finally{
-      setLoading(false)
+        error: authError,
+      };
+    } finally {
+      setLoading(false);
     }
-  }
-  
+  };
 
   return {
-    loading, loginWithGoogle,logout
+    loading,
+    loginWithGoogle,
+    login,
+    register,
+    logout,
   };
 };

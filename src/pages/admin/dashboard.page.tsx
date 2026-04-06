@@ -1,7 +1,9 @@
+
 import { useAuthActions } from "../../hooks/use-auth-actions"
 
 const DashboardPage = () => {
   const {logout} = useAuthActions()
+  
   return (
     <div>
       DashboardPage
