@@ -3,12 +3,13 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
-  updateProfile,
+  updateProfile, 
   type AuthError,
 } from "firebase/auth";
-import { GoogleAuthProvider } from "firebase/auth";
+import { GoogleAuthProvider ,} from "firebase/auth";
 import { useState} from "react";
 import { useAuth } from "reactfire";
+import { useUserActions } from "./use-user-actions";
 
 interface AuthActionsResponse {
   success: boolean;
@@ -16,6 +17,7 @@ interface AuthActionsResponse {
 }
 
 export const useAuthActions = () => {
+  const {createOrUpdateUser} = useUserActions()
   const [loading, setLoading] = useState<boolean>(false);
   const auth = useAuth();
 
@@ -24,7 +26,7 @@ export const useAuthActions = () => {
     try {
       const provider = new GoogleAuthProvider();
       const data = await signInWithPopup(auth, provider);
-      console.log(data);
+      await createOrUpdateUser(data.user)      
       return {
         success: true,
         error: null,
@@ -78,7 +80,8 @@ export const useAuthActions = () => {
         await updateProfile(currentUser.user, {
           displayName: data.displayName,
         });
-        currentUser.user.reload();
+        await createOrUpdateUser(currentUser.user)
+        await currentUser.user.reload();
       }
       return {
         success: true,

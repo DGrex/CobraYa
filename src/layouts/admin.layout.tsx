@@ -1,3 +1,4 @@
+import Navbar from "@/components/navbar";
 import { Suspense } from "react";
 import { Navigate, Outlet } from "react-router";
 import { useSigninCheck, useUser } from "reactfire";
@@ -25,9 +26,11 @@ export default AdminLayout;
 const AuthenticatedLayout = () => {
   useUser({ suspense: true });
   return (
-    <>
-      <nav>Este sera el navbar</nav>
-      <Outlet />
-    </>
+    <div className="h-screen min-h-screen overflow-hidden flex flex-col">
+      <Navbar/>
+      <div className="flex-1 overflow-auto">
+         <Outlet />
+      </div>      
+    </div>
   );
 };

@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { validarCedulaEcuatoriana } from "./validate-id";
 
 export const loginZodSchema = z.object({
   email: z.string().trim().pipe(z.email("Formato del correo invalido")),
@@ -22,4 +23,50 @@ export const registerZodSchema = z
     path: ["confirmPassword"],
   });
 
-  export type RegisterZodSchemaType = z.infer<typeof registerZodSchema>;
+export type RegisterZodSchemaType = z.infer<typeof registerZodSchema>;
+
+export const registerClientZodSchema = z
+  .object({
+    ci: z
+      .string()
+      .trim()
+      .min(10, "Mínimo 10 numero")
+      .max(10, "Máximo 10 numero"),
+    name: z
+      .string()
+      .min(3, "Mínimo 3 caracteres")
+      .max(25, "Máximo 25 caracteres"),
+    lastName: z
+      .string()
+      .trim()
+      .min(3, "Mínimo 3 caracteres")
+      .max(25, "Máximo 25 caracteres"),
+    email: z
+      .string()
+      .trim()
+      .pipe(z.email("Formato del correo invalido"))
+      .optional()
+      .or(z.literal("")),
+    phone: z
+      .string()
+      .trim()
+      .min(10, "Mínimo 10 numero")
+      .max(10, "Máximo 10 numero")
+      .regex(/^\d+$/, "Solo números")
+      .optional()
+      .or(z.literal("")),
+  })
+  .refine((data) => validarCedulaEcuatoriana(data.ci), {
+    message: "Cédula Invalida",
+    path: ["ci"],
+  });
+
+export type RegisterClientZodSchemaType = z.infer<typeof registerClientZodSchema>;
+
+// zod schema Sales
+
+export const salesClientZodSchema = z.object({
+  paid: z.number()
+})
+
+export type SalesClientZodSchemaType = z.infer<typeof salesClientZodSchema>;
