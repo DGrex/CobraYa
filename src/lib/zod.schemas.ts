@@ -61,12 +61,34 @@ export const registerClientZodSchema = z
     path: ["ci"],
   });
 
-export type RegisterClientZodSchemaType = z.infer<typeof registerClientZodSchema>;
+export type RegisterClientZodSchemaType = z.infer<
+  typeof registerClientZodSchema
+>;
 
 // zod schema Sales
 
 export const salesClientZodSchema = z.object({
-  paid: z.number()
-})
+  debt: z
+    .number("Debe ser un número")
+    .min(1, "La deuda debe ser mayor a 0")
+    .refine((val) => /^\d+(\.\d{1,2})?$/.test(val.toString()), {
+      message: "Solo se permiten hasta dos decimales",
+    }),
+});
 
 export type SalesClientZodSchemaType = z.infer<typeof salesClientZodSchema>;
+
+export const searchClientZodSchema = z
+  .object({
+    ci: z
+      .string()
+      .trim()
+      .min(10, "Mínimo 10 numero")
+      .max(10, "Máximo 10 numero"),
+  })
+  .refine((data) => validarCedulaEcuatoriana(data.ci), {
+    message: "Cédula Invalida",
+    path: ["ci"],
+  });
+
+export type SearchClientZodSchemaType = z.infer<typeof searchClientZodSchema>;

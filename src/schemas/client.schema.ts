@@ -1,4 +1,5 @@
-import type { Timestamp } from "firebase/firestore";
+import type { Timestamp,FieldValue } from "firebase/firestore";
+
 
 export interface ClientFirestoreSchema {
   id: string;
@@ -7,13 +8,13 @@ export interface ClientFirestoreSchema {
   lastName: string;
   email?: string;
   phone?: string;
-  debt?: number;
+  debt: number;
   userID: string;
 }
 
 export interface SalesOrPymentsFirestoreSchema {
     id: string;
-    date: Timestamp;
+    date: Timestamp | FieldValue;
     debt: number;
     clientId: string;
 }
