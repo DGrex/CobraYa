@@ -1,6 +1,6 @@
 import type {
   ClientFirestoreSchema,
-  SalesOrPymentsFirestoreSchema,
+  SalesOrPaymentsFirestoreSchema,
 } from "@/schemas/client.schema";
 import {
   addDoc,
@@ -18,13 +18,13 @@ import { useFirestore, useUser } from "reactfire";
 export const useClientAction = () => {
   const { data: user } = useUser();
   if (!user) {
-    throw new Error("Usurio no autenticado");
+    throw new Error("Usuario no autenticado");
   }
 
   const db = useFirestore();
   const clientCollectionRef = collection(db, "clients");
   const salesCollectionRef = collection(db, "sales");
-  const pymentsCollectionRef = collection(db, "pyments");
+  const paymentsCollectionRef = collection(db, "payments");
 
   const createClient = async (data: {
     ci: string;
@@ -90,18 +90,18 @@ export const useClientAction = () => {
       debt: number;
     },
     clientId: string,
-    salesOrPyments: string,
+    salesOrPayments: string,
   ) => {
-    const newData: Omit<SalesOrPymentsFirestoreSchema, "id"> = {
+    const newData: Omit<SalesOrPaymentsFirestoreSchema, "id"> = {
       ...data,
       date: serverTimestamp(),
       clientId,
     };
 
-    if (salesOrPyments === "sale") {
+    if (salesOrPayments === "sale") {
       return await addDoc(salesCollectionRef, newData);
-    } else if (salesOrPyments === "pyment") {
-      return await addDoc(pymentsCollectionRef, newData);
+    } else if (salesOrPayments === "payment") {
+      return await addDoc(paymentsCollectionRef, newData);
     } else {
       throw new Error("Tipo de operación inválido");
     }

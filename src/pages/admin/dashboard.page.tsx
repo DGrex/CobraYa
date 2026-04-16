@@ -6,7 +6,7 @@ const DashboardPage = () => {
   
   return (
     <div>
-      DashboardPage
+      DashboardPage 
       <button onClick={logout}>
       salir
       </button>

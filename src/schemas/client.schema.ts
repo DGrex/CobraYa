@@ -12,9 +12,10 @@ export interface ClientFirestoreSchema {
   userID: string;
 }
 
-export interface SalesOrPymentsFirestoreSchema {
+export interface SalesOrPaymentsFirestoreSchema {
     id: string;
     date: Timestamp | FieldValue;
     debt: number;
     clientId: string;
 }
+

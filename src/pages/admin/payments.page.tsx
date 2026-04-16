@@ -25,7 +25,7 @@ import { useState, useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-const PymentsPage = () => {
+const PaymentsPage = () => {
   const [isPending, startTransition] = useTransition();
   const { findClientByCi, createSales, updateClient } = useClientAction();
   const [clientData, setClientData] = useState({
@@ -50,7 +50,7 @@ const PymentsPage = () => {
           throw new Error("No has buscado un cliente");
         }
         const updatedDebt = clientData.debt - data.debt;
-        await createSales(data, clientData.clientId, "pyment");
+        await createSales(data, clientData.clientId, "payment");
         await updateClient(clientData.clientId, { debt: updatedDebt });
         setClientData((prev) => ({ ...prev, debt: updatedDebt }));
         form.reset();
@@ -142,4 +142,4 @@ const PymentsPage = () => {
   );
 };
 
-export default PymentsPage;
+export default PaymentsPage;
